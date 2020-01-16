@@ -3,7 +3,9 @@
 namespace App\Domain\User\Repository;
 
 use App\Domain\User\Data\UserCreateData;
-use PDO;
+use App\Repository\QueryFactory;
+use App\Repository\TableName;
+use Cake\Database\StatementInterface;
 
 /**
  * Repository.
@@ -11,18 +13,18 @@ use PDO;
 class UserCreatorRepository
 {
     /**
-     * @var PDO The database connection
+     * @var QueryFactory The query factory
      */
-    private $connection;
+    private $queryFactory;
 
     /**
-     * Constructor.
+     * The constructor.
      *
-     * @param PDO $connection The database connection
+     * @param QueryFactory $queryFactory The query factory
      */
-    public function __construct(PDO $connection)
+    public function __construct(QueryFactory $queryFactory)
     {
-        $this->connection = $connection;
+        $this->queryFactory = $queryFactory;
     }
 
     /**

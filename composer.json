@@ -2,6 +2,7 @@
   "name": "Vityuk Bogdan",
   "description": "Notes app simple API",
   "require": {
+    "cakephp/database": "^4.0",
     "php-di/php-di": "^6.0",
     "selective/config": "^0.1.0",
     "slim/http": "^0.8.0",
