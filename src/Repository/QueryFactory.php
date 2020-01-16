@@ -29,6 +29,7 @@ final class QueryFactory
     /**
      * Create a new query.
      *
+     *
      * @return Query The query
      */
     public function newQuery(): Query
