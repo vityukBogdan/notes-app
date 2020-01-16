@@ -1,5 +1,6 @@
 <?php
 
+use Cake\Database\Connection;
 use Psr\Container\ContainerInterface;
 use Selective\Config\Configuration;
 use Slim\App;
@@ -21,17 +22,16 @@ return [
         return $app;
     },
 
+    // Database connection
+    Connection::class => function (ContainerInterface $container) {
+        return new Connection($container->get(Configuration::class)->getArray('db'));
+    },
+
     PDO::class => function (ContainerInterface $container) {
-        $config = $container->get(Configuration::class);
+        $db = $container->get(Connection::class);
+        $driver = $db->getDriver();
+        $driver->connect();
 
-        $host = $config->getString('db.host');
-        $dbname = $config->getString('db.database');
-        $username = $config->getString('db.username');
-        $password = $config->getString('db.password');
-        $charset = $config->getString('db.charset');
-        $flags = $config->getArray('db.flags');
-        $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
-
-        return new PDO($dsn, $username, $password, $flags);
+        return $driver->getConnection();
     },
 ];

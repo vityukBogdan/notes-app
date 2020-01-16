@@ -17,13 +17,18 @@ $settings['public'] = $settings['root'] . '/public';
 
 // Database settings
 $settings['db'] = [
-    'driver' => 'mysql',
+    'driver' => \Cake\Database\Driver\Mysql::class,
     'host' => 'localhost',
     'username' => 'root',
     'database' => 'notes',
     'password' => '123123',
-    'charset' => 'utf8',
+    'encoding' => 'utf8',
     'collation' => 'utf8_general_ci',
+    // Enable identifier quoting
+    'quoteIdentifiers' => true,
+    // Set to null to use MySQL servers timezone
+    'timezone' => null,
+    // PDO options
     'flags' => [
         // Turn off persistent connections
         PDO::ATTR_PERSISTENT => false,
