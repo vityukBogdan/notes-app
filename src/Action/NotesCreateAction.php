@@ -3,17 +3,17 @@
 namespace App\Action;
 
 use App\Domain\Note\Data\NoteCreateData;
-use App\Domain\Note\Service\NoteCreator;
+use App\Domain\Note\Service\NoteService;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
-final class NoteAction
+final class NotesCreateAction
 {
-    private $noteCreator;
+    private $noteService;
 
-    public function __construct(NoteCreator $noteCreator)
+    public function __construct(NoteService $noteService)
     {
-        $this->userCreator = $noteCreator;
+        $this->noteService = $noteService;
     }
 
     public function __invoke(ServerRequest $request, Response $response): Response
@@ -23,15 +23,14 @@ final class NoteAction
 
         // Mapping (should be done in a mapper class)
         $note = new NoteCreateData();
-        $note->title = $data['username'];
-        $note->text = $data['first_name'];
+        $note->title = $data['title'];
+        $note->text = $data['text'];
 
-        // Invoke the Domain with inputs and retain the result
-        $noteId = $this->userCreator->createUser($note);
+        $noteId = $this->noteService->createNote($note);
 
         // Transform the result into the JSON representation
         $result = [
-            'user_id' => $noteId
+            'data' => $noteId
         ];
 
         // Build the HTTP response

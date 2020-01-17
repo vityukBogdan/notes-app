@@ -9,10 +9,4 @@ final class NoteCreateData
 
     /** @var string */
     public $text;
-
-    /** @var string */
-    public $create_time;
-
-    /** @var string */
-    public $update_time;
 }

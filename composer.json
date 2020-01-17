@@ -4,6 +4,7 @@
   "require": {
     "cakephp/database": "^4.0",
     "php-di/php-di": "^6.0",
+    "selective/basepath": "^0.2.0",
     "selective/config": "^0.1.0",
     "slim/http": "^0.8.0",
     "slim/psr7": "^0.6.0",
