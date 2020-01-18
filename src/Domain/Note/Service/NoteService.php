@@ -31,6 +31,11 @@ final class NoteService
         return $this->repository->getNotes();
     }
 
+    public function getNote($id)
+    {
+        return $this->repository->getNote($id);
+    }
+
     /**
      * Create a new note.
      *
@@ -38,15 +43,18 @@ final class NoteService
      *
      * @return int The new note ID
      */
-    public function createNote(NoteCreateData $note): int
+    public function createNote(NoteCreateData $note): array
     {
+        print_r($note); die();
         if (empty($note->title)) {
             throw new UnexpectedValueException('Title required');
         }
 
-        $note = $this->repository->insertNote($note);
+        if (strlen($note->title) > 64) {
+            throw new UnexpectedValueException('The title is too long');
+        }
 
-        return $note;
+        return $this->repository->insertNote($note);
     }
 
     /**
@@ -64,9 +72,7 @@ final class NoteService
             throw new UnexpectedValueException('Title required');
         }
 
-        $note = $this->repository->updateNote($note);
-
-        // Logging here: Note created successfully
+        $note = $this->repository->updateNote($id, $note);
 
         return $note;
     }
@@ -79,13 +85,10 @@ final class NoteService
      *
      * @return int The new note ID
      */
-    public function deleteNote($id): int
+    public function deleteNote($id): array
     {
-        // Insert note
-        $noteId = $this->repository->deletetNote($id);
+        $note = $this->repository->deletetNote($id);
 
-        // Logging here: Note created successfully
-
-        return $noteId;
+        return $note;
     }
 }

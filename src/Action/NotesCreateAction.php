@@ -18,22 +18,17 @@ final class NotesCreateAction
 
     public function __invoke(ServerRequest $request, Response $response): Response
     {
-        // Collect input from the HTTP request
         $data = (array)$request->getParsedBody();
 
-        // Mapping (should be done in a mapper class)
+        print_r($request);
+        print_r($data); die();
+
         $note = new NoteCreateData();
         $note->title = $data['title'];
         $note->text = $data['text'];
 
-        $noteId = $this->noteService->createNote($note);
+        $createdNote = $this->noteService->createNote($note);
 
-        // Transform the result into the JSON representation
-        $result = [
-            'data' => $noteId
-        ];
-
-        // Build the HTTP response
-        return $response->withJson($result)->withStatus(201);
+        return $response->withJson($createdNote)->withStatus(200);
     }
 }

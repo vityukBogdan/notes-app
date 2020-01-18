@@ -16,9 +16,8 @@ final class NotesUpdateAction
         $this->noteService = $noteService;
     }
 
-    public function __invoke(ServerRequest $request, Response $response): Response
+    public function __invoke(ServerRequest $request, Response $response, $args): Response
     {
-        $id = (array)$request->getQueryParams();
         $data = (array)$request->getParsedBody();
 
         // Mapping (should be done in a mapper class)
@@ -27,7 +26,7 @@ final class NotesUpdateAction
         $note->text = $data['text'];
 
         // Invoke the Domain with inputs and retain the result
-        $noteId = $this->noteService->updateNote($id, $note);
+        $noteId = $this->noteService->updateNote($args['id'], $note);
 
         // Transform the result into the JSON representation
         $result = [
@@ -35,6 +34,6 @@ final class NotesUpdateAction
         ];
 
         // Build the HTTP response
-        return $response->withJson($result)->withStatus(201);
+        return $response->withJson($result)->withStatus(200);
     }
 }

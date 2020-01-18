@@ -30,7 +30,7 @@ class NoteRepository
     /**
      * @return array Notes rows
      */
-    public function getNotes()
+    public function getNotes(): array
     {
         $query = $this->queryFactory->newSelect('notes')->select('*');
 
@@ -38,46 +38,53 @@ class NoteRepository
     }
 
     /**
-     * Insert user row.
-     *
-     * @param UserCreateData $user The user
-     *
-     * @return int The new ID
+     * @return array Note row
      */
-    public function insertNote(UserCreateData $user): int
+    public function getNote($id): array
     {
-        $row = [
-            'username' => $user->username,
-            'first_name' => $user->firstName,
-            'last_name' => $user->lastName,
-            'email' => $user->email,
-        ];
+        $query = $this->queryFactory->newSelect('notes');
 
-        $sql = "INSERT INTO users SET 
-                username=:username, 
-                first_name=:first_name, 
-                last_name=:last_name, 
-                email=:email;";
+        $query->select('*')->andWhere(['note_id' => $id]);
 
-        $this->connection->prepare($sql)->execute($row);
-
-        return (int)$this->connection->lastInsertId();
+        return $query->execute()->fetch('assoc');
     }
 
-    public function updateNote(NoteCreateData $note): int
+    /**
+     * Insert user row.
+     *
+     * @param NoteCreateData $note The note
+     *
+     * @return array The new note
+     */
+    public function insertNote(NoteCreateData $note): array
     {
-        $values = ['email' => 'new@example.com'];
+        $values = [
+            'title' => $note->title,
+            'text' => $note->text,
+        ];
 
-        $this->queryFactory->newUpdate('users')
+        $query = $this->queryFactory->newInsert('notes', $values);
+
+        return $query->execute()->fetch('assoc');
+    }
+
+    public function updateNote($id, NoteCreateData $note): int
+    {
+        $values = [
+            'title' => $note->title,
+            'text' => $note->text,
+        ];
+
+        $this->queryFactory->newUpdate('notes')
             ->set($values)
-            ->andWhere(['id' => 1])
+            ->andWhere(['id' => $id])
             ->execute();
     }
 
-    public function deleteNote(UserCreateData $user): int
+    public function deleteNote($id, UserCreateData $user): int
     {
         $this->queryFactory->newDelete('users')
-            ->andWhere(['id' => 1])
+            ->andWhere(['id' => $id])
             ->execute();
     }
 }

@@ -6,7 +6,7 @@ use App\Domain\Note\Service\NoteService;
 use Slim\Http\Response;
 use Slim\Http\ServerRequest;
 
-final class NotesDeleteAction
+final class NotesViewAction
 {
     private $noteService;
 
@@ -17,8 +17,12 @@ final class NotesDeleteAction
 
     public function __invoke(ServerRequest $request, Response $response, $args): Response
     {
-        $noteId = $this->noteService->deleteNote($args['id']);
+        if (empty($args)) {
+            return 1;
+        }
 
-        return $response->withJson($noteId)->withStatus(200);
+        $note = $this->noteService->getNote($args['id']);
+
+        return $response->withJson($note)->withStatus(200);
     }
 }
