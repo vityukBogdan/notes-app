@@ -5,7 +5,6 @@ namespace App\Domain\Note\Repository;
 use App\Domain\Note\Data\NoteCreateData;
 use App\Repository\QueryFactory;
 use App\Repository\TableName;
-use Cake\Database\StatementInterface;
 
 /**
  * Repository.
@@ -38,7 +37,9 @@ class NoteRepository
     }
 
     /**
-     * @return array Note row
+     * @param $id
+     *
+     * @return array Note rows
      */
     public function getNote($id): array
     {
@@ -50,13 +51,13 @@ class NoteRepository
     }
 
     /**
-     * Insert user row.
+     * Insert note row.
      *
      * @param NoteCreateData $note The note
      *
-     * @return array The new note
+     * @return int The new note
      */
-    public function insertNote(NoteCreateData $note): array
+    public function insertNote(NoteCreateData $note): int
     {
         $values = [
             'title' => $note->title,
@@ -65,26 +66,46 @@ class NoteRepository
 
         $query = $this->queryFactory->newInsert('notes', $values);
 
-        return $query->execute()->fetch('assoc');
+        return $query->execute()->lastInsertId();
     }
 
-    public function updateNote($id, NoteCreateData $note): int
+    /**
+     * Update note rows.
+     *
+     * @param $id
+     * @param NoteCreateData $note The note
+     *
+     * @return bool If successfully updated: true
+     */
+    public function updateNote($id, NoteCreateData $note): bool
     {
         $values = [
             'title' => $note->title,
             'text' => $note->text,
+            'update_time' => date('Y-m-d H:i:s')
         ];
 
-        $this->queryFactory->newUpdate('notes')
+        $save = $this->queryFactory->newUpdate('notes')
             ->set($values)
-            ->andWhere(['id' => $id])
+            ->andWhere(['note_id' => $id])
             ->execute();
+
+        return $save ? true : false;
     }
 
-    public function deleteNote($id, UserCreateData $user): int
+    /**
+     * Delete note.
+     *
+     * @param $id
+     *
+     * @return bool If successfully deleted: true
+     */
+    public function deleteNote($id): bool
     {
-        $this->queryFactory->newDelete('users')
-            ->andWhere(['id' => $id])
+        $delete = $this->queryFactory->newDelete('notes')
+            ->andWhere(['note_id' => $id])
             ->execute();
+
+        return $delete ? true : false;
     }
 }

@@ -7,13 +7,6 @@ import urlFor from './helpers/urlFor';
 import Flash from './components/Flash';
 import './App.css';
 
-const axiosConfig = {
-  headers: {
-    'Content-Type': 'application/json;charset=UTF-8',
-    'Access-Control-Allow-Origin': '*',
-  }
-};
-
 class App extends Component {
   constructor() {
     super();
@@ -46,16 +39,19 @@ class App extends Component {
 
   performSubmissionRequest = (data, id) => {
     if (id) {
-      return axios.put(urlFor(`notes/update/${id}`), data, axiosConfig);
+      return axios.put(urlFor(`notes/update/${id}`), data);
     } else {
-      return axios.post(urlFor('notes/add'), data, axiosConfig);
+      return axios.post(urlFor('notes/add'), data);
     }
   }
 
   submitNote = (data, id) => {
     this.performSubmissionRequest(data, id)
-    .then((res) => this.setState({ showNote: false}))
+    .then((res) => {
+      console.log('RESPONSE', res)
+      this.setState({ showNote: false})})
     .catch((err) => {
+      console.log('ERROR', err);
       const { errors } = err.response.data;
       if (errors.text) {
         this.setState({ error: "Missing Note Content!" });
@@ -66,9 +62,9 @@ class App extends Component {
   }
 
   deleteNote = (id) => {
-    const newNotesState = this.state.notes.filter((note) => note.id !== id );
+    const newNotesState = this.state.notes.filter((note) => note.note_id !== id);
     axios.delete(urlFor(`notes/delete/${id}`) )
-    .then((res) => this.setState({ notes: newNotesState }) )
+    .then((res) => this.setState({ notes: newNotesState }))
     .catch((err) => console.log(err.response.data) );
   }
 

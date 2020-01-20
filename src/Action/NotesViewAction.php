@@ -17,10 +17,6 @@ final class NotesViewAction
 
     public function __invoke(ServerRequest $request, Response $response, $args): Response
     {
-        if (empty($args)) {
-            return 1;
-        }
-
         $note = $this->noteService->getNote($args['id']);
 
         return $response->withJson($note)->withStatus(200);

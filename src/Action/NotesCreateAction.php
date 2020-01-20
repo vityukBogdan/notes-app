@@ -20,15 +20,12 @@ final class NotesCreateAction
     {
         $data = (array)$request->getParsedBody();
 
-        print_r($request);
-        print_r($data); die();
-
         $note = new NoteCreateData();
         $note->title = $data['title'];
         $note->text = $data['text'];
 
-        $createdNote = $this->noteService->createNote($note);
+        $noteId = $this->noteService->createNote($note);
 
-        return $response->withJson($createdNote)->withStatus(200);
+        return $response->withJson(['noteId' => $noteId])->withStatus(200);
     }
 }

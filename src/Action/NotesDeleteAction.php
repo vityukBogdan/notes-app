@@ -17,8 +17,8 @@ final class NotesDeleteAction
 
     public function __invoke(ServerRequest $request, Response $response, $args): Response
     {
-        $noteId = $this->noteService->deleteNote($args['id']);
+        $this->noteService->deleteNote($args['id']);
 
-        return $response->withJson($noteId)->withStatus(200);
+        return $response->withStatus(204);
     }
 }

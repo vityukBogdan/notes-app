@@ -5,9 +5,11 @@ namespace App\Domain\Note\Service;
 use App\Domain\Note\Data\NoteCreateData;
 use App\Domain\Note\Repository\NoteRepository;
 use UnexpectedValueException;
+use InvalidArgumentException;
+use LengthException;
 
 /**
- * Service.
+ * NoteService.
  */
 final class NoteService
 {
@@ -33,6 +35,10 @@ final class NoteService
 
     public function getNote($id)
     {
+        if (empty($id)) {
+            throw new InvalidArgumentException('Id required');
+        }
+
         return $this->repository->getNote($id);
     }
 
@@ -43,9 +49,8 @@ final class NoteService
      *
      * @return int The new note ID
      */
-    public function createNote(NoteCreateData $note): array
+    public function createNote(NoteCreateData $note): int
     {
-        print_r($note); die();
         if (empty($note->title)) {
             throw new UnexpectedValueException('Title required');
         }
@@ -63,32 +68,34 @@ final class NoteService
      * @param $id
      * @param NoteCreateData $note The note data
      *
-     * @return int The new note ID
+     * @return bool
      */
-    public function updateNote($id, NoteCreateData $note): int
+    public function updateNote($id, NoteCreateData $note): bool
     {
-        // Validation
         if (empty($note->title)) {
             throw new UnexpectedValueException('Title required');
         }
 
-        $note = $this->repository->updateNote($id, $note);
+        if (strlen($note->title) > 64) {
+            throw new LengthException('The title is too long');
+        }
 
-        return $note;
+        return $this->repository->updateNote($id, $note);
     }
 
     /**
-     * Update a new note.
+     * Delete note.
      *
      * @param $id
-     * @param NoteCreateData $note The note data
      *
-     * @return int The new note ID
+     * @return bool
      */
-    public function deleteNote($id): array
+    public function deleteNote($id): bool
     {
-        $note = $this->repository->deletetNote($id);
+        if (empty($id)) {
+            throw new InvalidArgumentException('Id required');
+        }
 
-        return $note;
+        return $this->repository->deleteNote($id);
     }
 }

@@ -20,20 +20,12 @@ final class NotesUpdateAction
     {
         $data = (array)$request->getParsedBody();
 
-        // Mapping (should be done in a mapper class)
         $note = new NoteCreateData();
         $note->title = $data['title'];
         $note->text = $data['text'];
 
-        // Invoke the Domain with inputs and retain the result
-        $noteId = $this->noteService->updateNote($args['id'], $note);
+        $this->noteService->updateNote($args['id'], $note);
 
-        // Transform the result into the JSON representation
-        $result = [
-            'data' => $noteId
-        ];
-
-        // Build the HTTP response
-        return $response->withJson($result)->withStatus(200);
+        return $response->withJson(['success'])->withStatus(200);
     }
 }
